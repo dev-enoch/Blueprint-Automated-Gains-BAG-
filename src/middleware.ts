@@ -3,18 +3,18 @@ import type { NextRequest } from 'next/server';
 import { getAuth } from './lib/auth';
 
 export async function middleware(request: NextRequest) {
-  // const { pathname } = request.nextUrl;
-  // const user = await getAuth();
+  const { pathname } = request.nextUrl;
+  const user = await getAuth();
 
-  // const isAuthPage = pathname === '/login';
+  const isAuthPage = pathname === '/login';
 
-  // if (!user && !isAuthPage) {
-  //   return NextResponse.redirect(new URL('/login', request.url));
-  // }
+  if (!user && !isAuthPage) {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
 
-  // if (user && isAuthPage) {
-  //   return NextResponse.redirect(new URL('/', request.url));
-  // }
+  if (user && isAuthPage) {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
 
   return NextResponse.next();
 }
