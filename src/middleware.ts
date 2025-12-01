@@ -1,18 +1,18 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { getAuth } from './lib/auth';
+import { AUTH_TOKEN_COOKIE } from './lib/constants';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const user = await getAuth();
+  const token = request.cookies.get(AUTH_TOKEN_COOKIE)?.value;
 
   const isAuthPage = pathname === '/login';
 
-  if (!user && !isAuthPage) {
+  if (!token && !isAuthPage) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  if (user && isAuthPage) {
+  if (token && isAuthPage) {
     return NextResponse.redirect(new URL('/', request.url));
   }
 
