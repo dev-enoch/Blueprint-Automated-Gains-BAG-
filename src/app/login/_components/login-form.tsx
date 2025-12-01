@@ -16,7 +16,8 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { handleLogin } from '../actions';
 import { Loader2 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   email: z.string().min(1, 'Email is required.').email("Please enter a valid email address."),
@@ -25,7 +26,8 @@ const formSchema = z.object({
 
 export function LoginForm() {
   const { toast } = useToast();
-  const [isPending, setIsPending] = useState(false);
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -36,17 +38,19 @@ export function LoginForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsPending(true);
-    const result = await handleLogin(values);
-    if (result.error) {
-      toast({
-        variant: 'destructive',
-        title: 'Login Failed',
-        description: result.error,
-      });
-    }
-    // On success, middleware will redirect, so no toast is needed.
-    setIsPending(false);
+    startTransition(async () => {
+      const result = await handleLogin(values);
+      if (result.error) {
+        toast({
+          variant: 'destructive',
+          title: 'Login Failed',
+          description: result.error,
+        });
+      } else {
+        router.push('/');
+        router.refresh(); // Ensure the layout re-renders with user data
+      }
+    });
   }
 
   return (
