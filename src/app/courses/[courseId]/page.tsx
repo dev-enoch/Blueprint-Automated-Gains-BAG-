@@ -1,6 +1,6 @@
 import { getAuth } from '@/lib/auth';
 import { getCourseById, getUserProgress } from '@/lib/data';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { AppLayout } from '@/components/app/AppLayout';
 import { CourseClientPage } from './_components/CourseClientPage';
 
@@ -12,8 +12,11 @@ type CoursePageProps = {
 
 export default async function CoursePage({ params }: CoursePageProps) {
   const user = await getAuth();
+  // The middleware now handles redirection, so we just need to ensure user is not null for type safety.
   if (!user) {
-    redirect('/login');
+    // This should not be reached if middleware is configured correctly.
+    // We can show a loading/error state or simply return null.
+    return null;
   }
 
   const course = await getCourseById(params.courseId);
