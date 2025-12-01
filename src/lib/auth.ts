@@ -3,8 +3,7 @@
 import { cookies } from 'next/headers';
 import { getUserByEmail, getUserById } from './data';
 import { redirect } from 'next/navigation';
-
-export const AUTH_TOKEN_COOKIE = '__initial_auth_token';
+import { AUTH_TOKEN_COOKIE } from './constants';
 
 export async function getAuth() {
   const cookieStore = cookies();

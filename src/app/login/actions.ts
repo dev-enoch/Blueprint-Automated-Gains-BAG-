@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers';
 import { getUserByEmail } from '@/lib/data';
-import { AUTH_TOKEN_COOKIE } from '@/lib/auth';
+import { AUTH_TOKEN_COOKIE } from '@/lib/constants';
 
 export async function handleLogin(token: string) {
   // In a real app, you would validate the custom token with Firebase Admin SDK
