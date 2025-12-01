@@ -1,0 +1,17 @@
+diff --git a/node_modules/genkit/package.json b/node_modules/genkit/package.json
+index 58f44de..53c45a7 100644
+--- a/node_modules/genkit/package.json
++++ b/node_modules/genkit/package.json
+@@ -67,6 +67,11 @@
+     "google-auth-library": "^9.10.0"
+   },
+   "peerDependenciesMeta": {
+-    "google-auth-library": { "optional": true }
++    "google-auth-library": {
++      "optional": true
++    }
++  },
++  "browser": {
++    "perf_hooks": false
+   }
+ }
