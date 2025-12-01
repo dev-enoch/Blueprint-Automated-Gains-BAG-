@@ -26,7 +26,6 @@ const formSchema = z.object({
 
 export function LoginForm() {
   const { toast } = useToast();
-  const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -47,8 +46,12 @@ export function LoginForm() {
           description: result.error,
         });
       } else {
-        router.push('/');
-        router.refresh(); // Ensure the layout re-renders with user data
+        toast({
+            title: "Login Successful",
+            description: "Welcome back!",
+        });
+        // Full page navigation to ensure server state is updated.
+        window.location.href = '/';
       }
     });
   }
