@@ -14,11 +14,12 @@ export interface UserProgress {
 export interface Topic {
   id: string;
   title: string;
-  content: string;
+  description: string;
+  videoId: string;
 }
 
 export interface Module {
-  id: string;
+  id:string;
   title: string;
   topics: Topic[];
 }
