@@ -1,5 +1,4 @@
-import 'server-only';
-import type { Course, Module, Topic, User, UserProgress } from './types';
+import type { Course, User, UserProgress } from './types';
 
 let mockUsers: User[] = [
   { id: 'user1', email: 'user@bag.com', password: '123456', role: 'user', lastLogin: '2024-07-29T10:00:00Z', active: true },
