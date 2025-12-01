@@ -16,8 +16,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { handleLogin } from '../actions';
 import { Loader2 } from 'lucide-react';
-import { useState, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
+import { useTransition } from 'react';
 
 const formSchema = z.object({
   email: z.string().min(1, 'Email is required.').email("Please enter a valid email address."),
