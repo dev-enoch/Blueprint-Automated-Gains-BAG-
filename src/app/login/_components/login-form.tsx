@@ -19,7 +19,8 @@ import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
 
 const formSchema = z.object({
-  token: z.string().min(1, 'Token is required.').email("Please enter a valid email address."),
+  email: z.string().min(1, 'Email is required.').email("Please enter a valid email address."),
+  password: z.string().min(1, 'Password is required.'),
 });
 
 export function LoginForm() {
@@ -29,13 +30,14 @@ export function LoginForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      token: '',
+      email: '',
+      password: '',
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsPending(true);
-    const result = await handleLogin(values.token);
+    const result = await handleLogin(values);
     if (result.error) {
       toast({
         variant: 'destructive',
@@ -52,16 +54,34 @@ export function LoginForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
-          name="token"
+          name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email Address (as token)</FormLabel>
+              <FormLabel>Email Address</FormLabel>
               <FormControl>
                 <Input
                   placeholder="e.g., admin@bag.com"
                   {...field}
                   type="email"
                   autoComplete="email"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="********"
+                  {...field}
+                  type="password"
+                  autoComplete="current-password"
                 />
               </FormControl>
               <FormMessage />

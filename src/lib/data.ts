@@ -3,10 +3,10 @@ import type { Course, Module, Topic, User, UserProgress } from './types';
 import { generateInitialContent } from '@/ai/flows/generate-initial-content';
 
 let mockUsers: User[] = [
-  { id: 'user1', email: 'user@bag.com', role: 'user', lastLogin: '2024-07-29T10:00:00Z', active: true },
-  { id: 'admin1', email: 'admin@bag.com', role: 'admin', lastLogin: '2024-07-29T12:00:00Z', active: true },
-  { id: 'user2', email: 'another.user@example.com', role: 'user', lastLogin: '2024-07-28T15:30:00Z', active: true },
-  { id: 'user3', email: 'deactivated@example.com', role: 'user', lastLogin: '2024-07-27T18:00:00Z', active: false },
+  { id: 'user1', email: 'user@bag.com', password: '123456', role: 'user', lastLogin: '2024-07-29T10:00:00Z', active: true },
+  { id: 'admin1', email: 'admin@bag.com', password: 'admin1234', role: 'admin', lastLogin: '2024-07-29T12:00:00Z', active: true },
+  { id: 'user2', email: 'another.user@example.com', password: '123456', role: 'user', lastLogin: '2024-07-28T15:30:00Z', active: true },
+  { id: 'user3', email: 'deactivated@example.com', password: '123456', role: 'user', lastLogin: '2024-07-27T18:00:00Z', active: false },
 ];
 
 let mockCourses: Course[] = [];
@@ -87,6 +87,12 @@ async function ensureCoursesGenerated() {
 
 // Simulate network latency
 const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
+
+export async function authenticateUser(email: string, password: string):Promise<User | undefined> {
+  await delay(100);
+  const user = mockUsers.find(u => u.email === email && u.password === password);
+  return user ? JSON.parse(JSON.stringify(user)) : undefined;
+}
 
 export async function getCourses(): Promise<Course[]> {
   await ensureCoursesGenerated();

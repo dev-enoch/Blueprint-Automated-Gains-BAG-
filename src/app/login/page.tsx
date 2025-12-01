@@ -17,7 +17,7 @@ export default function LoginPage() {
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <LoginForm />
         <p className="mt-10 text-center text-sm text-muted-foreground">
-          Use 'user@bag.com' or 'admin@bag.com'
+          Use 'user@bag.com' (pw: 123456) or 'admin@bag.com' (pw: admin1234)
         </p>
       </div>
     </div>

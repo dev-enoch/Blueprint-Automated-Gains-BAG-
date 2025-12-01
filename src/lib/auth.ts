@@ -1,7 +1,7 @@
 'use server';
 
 import { cookies } from 'next/headers';
-import { getUserByEmail, getUserById } from './data';
+import { getUserById } from './data';
 import { redirect } from 'next/navigation';
 import { AUTH_TOKEN_COOKIE } from './constants';
 
