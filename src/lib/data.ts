@@ -1,8 +1,11 @@
 import 'server-only';
 import { collection, getDocs, doc, getDoc, setDoc, updateDoc, writeBatch } from 'firebase/firestore';
-import { db } from '@/firebase/admin';
+import { db as adminDb, adminAuth as adminAuthInstance } from '@/firebase/admin';
 import type { Course, Module, Topic, User, UserProfile, UserProgress } from './types';
-import { adminAuth } from '@/firebase/admin';
+
+// Ensure db is not null before using
+const db = adminDb!;
+const adminAuth = adminAuthInstance!;
 
 
 export async function getCourses(): Promise<Course[]> {
@@ -47,6 +50,10 @@ export async function getCourseById(id: string): Promise<Course | undefined> {
 }
 
 export async function getUsers(): Promise<User[]> {
+    if (!adminAuth) {
+        console.warn('Firebase Admin Auth not initialized. Cannot get users.');
+        return [];
+    }
     const listUsersResult = await adminAuth.listUsers();
     const users: User[] = await Promise.all(listUsersResult.users.map(async (userRecord) => {
         const userDoc = await getDoc(doc(db, 'users', userRecord.uid));
@@ -63,6 +70,9 @@ export async function getUsers(): Promise<User[]> {
 }
 
 export async function updateUser(userId: string, updates: Partial<{ role: 'user' | 'admin', active: boolean }>): Promise<User> {
+    if (!adminAuth) {
+        throw new Error('Firebase Admin Auth not initialized. Cannot update user.');
+    }
     const userRecord = await adminAuth.getUser(userId);
     
     if (updates.role) {

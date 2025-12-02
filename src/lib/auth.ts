@@ -2,9 +2,8 @@
 
 import { cookies } from 'next/headers';
 import { AUTH_TOKEN_COOKIE } from './constants';
-import { adminAuth } from '@/firebase/admin';
+import { adminAuth, db } from '@/firebase/admin';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '@/firebase/admin';
 import type { User } from './types';
 import { redirect } from 'next/navigation';
 
@@ -12,6 +11,11 @@ export async function getAuth() {
   const token = cookies().get(AUTH_TOKEN_COOKIE)?.value;
 
   if (!token) {
+    return null;
+  }
+  
+  if (!adminAuth || !db) {
+    console.error("Firebase Admin not initialized. Cannot verify token.");
     return null;
   }
 

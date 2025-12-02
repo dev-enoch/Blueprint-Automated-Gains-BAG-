@@ -6,16 +6,21 @@ const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
 if (!admin.apps.length) {
   if (serviceAccount) {
     // Running on the server, use service account
-    admin.initializeApp({
-      credential: admin.credential.cert(JSON.parse(serviceAccount)),
-    });
+    try {
+      admin.initializeApp({
+        credential: admin.credential.cert(JSON.parse(serviceAccount)),
+      });
+    } catch (e: any) {
+      console.error('Firebase admin initialization error', e);
+    }
   } else {
-    // Running in a local or other environment, use default credentials
-     admin.initializeApp({
-        projectId: getFirebaseConfig().projectId,
-     });
+    // Do not initialize if service account is not available
+    console.warn("FIREBASE_SERVICE_ACCOUNT_KEY is not set. Firebase Admin SDK will not be initialized. This is expected for client-side rendering.");
   }
 }
 
-export const adminAuth = admin.auth();
-export const db = admin.firestore();
+// Ensure admin is initialized before exporting auth and db
+const adminAuth = admin.apps.length ? admin.auth() : null;
+const db = admin.apps.length ? admin.firestore() : null;
+
+export { adminAuth, db };

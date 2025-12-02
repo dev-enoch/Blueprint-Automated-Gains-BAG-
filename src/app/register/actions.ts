@@ -1,10 +1,8 @@
 'use server';
 
 import * as z from 'zod';
-import { adminAuth, db } from '@/firebase/admin';
+import { adminAuth as adminAuthInstance, db as adminDb } from '@/firebase/admin';
 import { FieldValue } from 'firebase-admin/firestore';
-import { cookies } from 'next/headers';
-import { AUTH_TOKEN_COOKIE } from '@/lib/constants';
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -12,6 +10,13 @@ const formSchema = z.object({
 });
 
 export async function handleRegister(credentials: z.infer<typeof formSchema>) {
+  const adminAuth = adminAuthInstance;
+  const db = adminDb;
+
+  if (!adminAuth || !db) {
+    return { error: 'Server is not configured for registration. Please contact support.' };
+  }
+    
   try {
     const parsedCredentials = formSchema.safeParse(credentials);
 

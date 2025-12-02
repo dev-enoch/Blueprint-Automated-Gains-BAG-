@@ -1,7 +1,7 @@
 'use server';
 
 import { getAuth } from "@/lib/auth";
-import { updateUser, User } from "@/lib/data";
+import { updateUser } from "@/lib/data";
 import { revalidatePath } from "next/cache";
 
 export async function updateUserOnServer(userId: string, updates: Partial<{ role: 'user' | 'admin', active: boolean }>) {

@@ -1,9 +1,10 @@
 import { initializeApp } from 'firebase-admin/app';
-import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+import { getFirestore } from 'firebase-admin/firestore';
 import * as dotenv from 'dotenv';
+import * as admin from 'firebase-admin';
+
 dotenv.config({ path: '.env.local' });
 
-// Initialize Firebase Admin SDK
 const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
 
 if (!serviceAccount) {
@@ -12,7 +13,7 @@ if (!serviceAccount) {
 
 try {
     initializeApp({
-        credential: require('firebase-admin').credential.cert(JSON.parse(serviceAccount)),
+        credential: admin.credential.cert(JSON.parse(serviceAccount)),
     });
 } catch (error: any) {
     if (error.code !== 'app/duplicate-app') {
@@ -29,6 +30,7 @@ const coursesData = [
       id: 'en-affiliate-marketing',
       title: 'Affiliate Marketing',
       description: 'Learn the fundamentals of affiliate marketing and how to succeed.',
+      language: 'en',
       modules: [
         {
           id: 'en-am-m1',
@@ -44,6 +46,7 @@ const coursesData = [
       id: 'en-graphics-design',
       title: 'Graphics Design',
       description: 'Master the art of graphics design with modern tools and techniques.',
+      language: 'en',
       modules: [
         {
           id: 'en-gd-m1',
@@ -58,6 +61,7 @@ const coursesData = [
       id: 'en-fb-tiktok-ads',
       title: 'Facebook & Tiktok Advertising',
       description: 'Drive growth with powerful advertising strategies on social media.',
+      language: 'en',
       modules: [
         {
           id: 'en-fta-m1',
@@ -73,6 +77,7 @@ const coursesData = [
       id: 'ha-affiliate-marketing',
       title: 'Affiliate Marketing (Hausa)',
       description: 'Koyi tushen tallan haɗin gwiwa da yadda ake samun nasara.',
+      language: 'ha',
       modules: [
         {
           id: 'ha-am-m1',
@@ -88,6 +93,7 @@ const coursesData = [
       id: 'ha-graphics-design',
       title: 'Graphics Design (Hausa)',
       description: 'Kware a fasahar zane-zane na zamani da dabaru.',
+      language: 'ha',
        modules: [
         {
           id: 'ha-gd-m1',
@@ -102,6 +108,7 @@ const coursesData = [
       id: 'ha-fb-tiktok-ads',
       title: 'Facebook & Tiktok Advertising (Hausa)',
       description: 'Samu ci gaba da manyan dabarun talla a shafukan sada zumunta.',
+      language: 'ha',
        modules: [
         {
           id: 'ha-fta-m1',
@@ -120,25 +127,18 @@ async function seedDatabase() {
     const batch = db.batch();
 
     for (const course of coursesData) {
+        const { modules, ...courseData } = course;
         const courseRef = db.collection('courses').doc(course.id);
-        batch.set(courseRef, {
-            title: course.title,
-            description: course.description
-        });
+        batch.set(courseRef, courseData);
 
         for (const module of course.modules) {
+            const { topics, ...moduleData } = module;
             const moduleRef = courseRef.collection('modules').doc(module.id);
-            batch.set(moduleRef, {
-                title: module.title
-            });
+            batch.set(moduleRef, moduleData);
 
             for (const topic of module.topics) {
                 const topicRef = moduleRef.collection('topics').doc(topic.id);
-                batch.set(topicRef, {
-                    title: topic.title,
-                    description: topic.description,
-                    videoId: topic.videoId
-                });
+                batch.set(topicRef, topic);
             }
         }
     }
