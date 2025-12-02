@@ -1,33 +1,38 @@
 'use client';
 
-import { CheckCircle2, Circle } from 'lucide-react';
+import { CheckCircle2, Circle, PlayCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { Topic } from '@/lib/types';
+import Link from 'next/link';
 
 interface TopicItemProps {
   topic: Topic;
   isCompleted: boolean;
   isSelected: boolean;
-  onSelect: (topic: Topic) => void;
+  courseId: string;
 }
 
-export function TopicItem({ topic, isCompleted, isSelected, onSelect }: TopicItemProps) {
+export function TopicItem({ topic, isCompleted, isSelected, courseId }: TopicItemProps) {
+  const Icon = isCompleted ? CheckCircle2 : isSelected ? PlayCircle : Circle;
+
   return (
     <Button
       variant="ghost"
+      asChild
       className={cn(
         'w-full justify-start pl-2 h-auto py-2',
         isSelected && 'bg-primary/10'
       )}
-      onClick={() => onSelect(topic)}
     >
-      {isCompleted ? (
-        <CheckCircle2 className="h-5 w-5 mr-2 text-primary fill-primary/20" />
-      ) : (
-        <Circle className="h-5 w-5 mr-2 text-muted-foreground" />
-      )}
-      <span className="flex-1 text-left text-sm">{topic.title}</span>
+      <Link href={`/courses/${courseId}/${topic.id}`}>
+        <Icon className={cn(
+          "h-5 w-5 mr-2 text-muted-foreground",
+          isCompleted && "text-primary fill-primary/20",
+          isSelected && "text-primary",
+        )} />
+        <span className="flex-1 text-left text-sm">{topic.title}</span>
+      </Link>
     </Button>
   );
 }

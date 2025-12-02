@@ -27,7 +27,7 @@ let mockCourses: Course[] = [
           id: 'c1-m2',
           title: 'Module 2: Building Your Platform',
           topics: [
-            { id: 'c1-m2-t1', title: 'Setting Up Your Website', description: 'A step-by-step guide to getting your affiliate website online using modern, easy-to-use tools.', videoId: 'https://www.youtube.com/watch?v=ERp02p3tX6I' },
+            { id: 'c1-m2-t1', title: 'Setting Up Your Website', description: 'A step-by-step guide to getting your affiliate website online using modern, easy-to-use tools.', videoId: 'ERp02p3tX6I' },
             { id: 'c1-m2-t2', title: 'Creating High-Converting Content', description: 'Learn the art and science behind content that not only ranks but also persuades your audience to take action.', videoId: '5nER-z22a2I' },
           ],
         },
@@ -71,8 +71,23 @@ export async function getCourses(): Promise<Course[]> {
 
 export async function getCourseById(id: string): Promise<Course | undefined> {
   await delay(100);
-  return JSON.parse(JSON.stringify(mockCourses.find(c => c.id === id)));
+  const course = mockCourses.find(c => c.id === id);
+  if (!course) return undefined;
+  
+  const courseCopy = JSON.parse(JSON.stringify(course));
+
+  // Correcting a previous issue where a full URL was in the videoId
+  courseCopy.modules.forEach((mod: Module) => {
+    mod.topics.forEach((topic: Topic) => {
+      if (topic.videoId.includes('watch?v=')) {
+        topic.videoId = new URL(topic.videoId).searchParams.get('v') || '';
+      }
+    })
+  });
+
+  return courseCopy;
 }
+
 
 export async function getUsers(): Promise<User[]> {
   await delay(100);
