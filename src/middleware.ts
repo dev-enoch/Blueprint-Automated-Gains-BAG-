@@ -11,22 +11,30 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  const isAuthPage = pathname.startsWith('/login');
+  const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register');
  
   if (isAuthPage) {
     if (user) {
-      // If the user is authenticated, redirect them from login to the home page.
+      // If the user is authenticated, redirect them from login/register to the home page.
       return NextResponse.redirect(new URL('/', request.url))
     }
-    // If not authenticated, allow them to see the login page.
+    // If not authenticated, allow them to see the login/register page.
     return NextResponse.next();
   }
  
   if (!user) {
-     // If the user is not authenticated and not on the login page, redirect them to login.
+     // If the user is not authenticated and not on an auth page, redirect them to login.
     return NextResponse.redirect(new URL('/login', request.url))
   }
  
+  // Handle admin routes
+  if (pathname.startsWith('/admin')) {
+    if (user.role !== 'admin') {
+      // If user is not an admin, redirect them to the home page
+      return NextResponse.redirect(new URL('/', request.url));
+    }
+  }
+
   return NextResponse.next()
 }
  

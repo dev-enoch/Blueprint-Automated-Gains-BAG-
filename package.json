@@ -5,12 +5,13 @@
   "scripts": {
     "dev": "next dev --turbopack -p 9002",
     "genkit:dev": "genkit start -- tsx src/ai/dev.ts",
-    "genkit:watch": "genkit start -- tsx --watch src/ai/dev.ts",
+    "genkit:watch": "genkit start -- tsx --watch srcai/dev.ts",
     "build": "NODE_ENV=production next build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "seed-db": "tsx scripts/seed-db.ts"
   },
   "dependencies": {
     "@genkit-ai/google-genai": "^1.20.0",
@@ -42,7 +43,8 @@
     "date-fns": "^3.6.0",
     "dotenv": "^16.5.0",
     "embla-carousel-react": "^8.6.0",
-    "firebase": "^11.9.1",
+    "firebase": "^10.12.2",
+    "firebase-admin": "^12.1.1",
     "genkit": "^1.20.0",
     "lucide-react": "^0.475.0",
     "next": "15.3.3",
@@ -63,6 +65,7 @@
     "genkit-cli": "^1.20.0",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
+    "tsx": "^4.15.6",
     "typescript": "^5"
   }
 }

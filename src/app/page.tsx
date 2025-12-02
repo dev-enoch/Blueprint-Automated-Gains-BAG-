@@ -5,9 +5,10 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import type { Course } from '@/lib/types';
 
 export default async function HomePage() {
-  const courses = await getCourses();
+  const courses: Course[] = await getCourses();
 
   return (
     <AppLayout>

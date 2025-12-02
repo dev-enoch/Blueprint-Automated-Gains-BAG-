@@ -1,33 +1,46 @@
 'use server';
 
 import { cookies } from 'next/headers';
-import { getUserById } from './data';
-import { redirect } from 'next/navigation';
 import { AUTH_TOKEN_COOKIE } from './constants';
+import { adminAuth } from '@/firebase/admin';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/firebase/admin';
+import type { User } from './types';
+import { redirect } from 'next/navigation';
 
 export async function getAuth() {
-  const cookieStore = cookies();
-  const token = cookieStore.get(AUTH_TOKEN_COOKIE)?.value;
+  const token = cookies().get(AUTH_TOKEN_COOKIE)?.value;
 
   if (!token) {
     return null;
   }
 
-  // In a real app, you'd validate the token against Firebase Auth
-  // For this mock, the token is the user ID.
-  const user = await getUserById(token);
+  try {
+    const decodedToken = await adminAuth.verifyIdToken(token);
+    const userDoc = await getDoc(doc(db, 'users', decodedToken.uid));
+    
+    if (!userDoc.exists()) {
+      return null;
+    }
+    
+    const userProfile = userDoc.data();
 
-  if (!user || !user.active) {
-    // If user not found or inactive, clear the cookie and treat as logged out
-    cookieStore.delete(AUTH_TOKEN_COOKIE);
+    const user: User = {
+      id: decodedToken.uid,
+      email: decodedToken.email || null,
+      role: userProfile.role || 'user'
+    };
+
+    return user;
+  } catch (error) {
+    console.error("Auth error:", error);
+    // Clear the cookie if token is invalid
+    cookies().delete(AUTH_TOKEN_COOKIE);
     return null;
   }
-  
-  return user;
 }
 
 export async function signOut() {
-  const cookieStore = cookies();
-  cookieStore.delete(AUTH_TOKEN_COOKIE);
+  cookies().delete(AUTH_TOKEN_COOKIE);
   redirect('/login');
 }

@@ -1,0 +1,91 @@
+{
+  "entities": {
+    "userProfile": {
+      "title": "User Profile",
+      "description": "Represents a user's profile in the system.",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The user's email address."
+        },
+        "role": {
+          "type": "string",
+          "description": "The user's role.",
+          "enum": ["user", "admin"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp when the user profile was created."
+        }
+      },
+      "required": ["email", "role", "createdAt"]
+    },
+    "course": {
+      "title": "Course",
+      "description": "Represents a course.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" }
+      },
+      "required": ["title", "description"]
+    },
+    "module": {
+      "title": "Module",
+      "description": "A module within a course.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" }
+      },
+      "required": ["title"]
+    },
+    "topic": {
+      "title": "Topic",
+      "description": "A topic within a module.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "videoId": { "type": "string" }
+      },
+      "required": ["title", "description", "videoId"]
+    },
+    "userProgress": {
+        "title": "User Progress",
+        "description": "Tracks a user's completion of a topic.",
+        "type": "object",
+        "properties": {
+            "completed": { "type": "boolean" }
+        },
+        "required": ["completed"]
+    }
+  },
+  "auth": {
+    "providers": ["email"]
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/userProfile" },
+      "description": "Stores public-facing user profile information."
+    },
+    "/users/{userId}/progress/{topicId}": {
+        "schema": { "$ref": "#/entities/userProgress" },
+        "description": "Tracks completion status for each topic for a user."
+    },
+    "/courses/{courseId}": {
+      "schema": { "$ref": "#/entities/course" },
+      "description": "Top-level collection for all courses."
+    },
+    "/courses/{courseId}/modules/{moduleId}": {
+      "schema": { "$ref": "#/entities/module" },
+      "description": "Sub-collection for modules within a course."
+    },
+    "/courses/{courseId}/modules/{moduleId}/topics/{topicId}": {
+      "schema": { "$ref": "#/entities/topic" },
+      "description": "Sub-collection for topics within a module."
+    }
+  }
+}

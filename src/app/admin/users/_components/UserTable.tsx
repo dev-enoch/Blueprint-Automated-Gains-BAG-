@@ -46,17 +46,17 @@ export function UserTable({ initialUsers }: { initialUsers: User[] }) {
 
   const filteredUsers = useMemo(() => {
     return users.filter(user => {
-      const searchMatch = user.email.toLowerCase().includes(searchTerm.toLowerCase());
+      const searchMatch = user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false;
       const statusMatch = statusFilter === 'all' || (statusFilter === 'active' && user.active) || (statusFilter === 'inactive' && !user.active);
       const roleMatch = roleFilter === 'all' || user.role === roleFilter;
       return searchMatch && statusMatch && roleMatch;
     });
   }, [users, searchTerm, statusFilter, roleFilter]);
   
-  const handleUpdateUser = async (user: User, updates: Partial<User>) => {
+  const handleUpdateUser = async (user: User, updates: Partial<{role: 'user' | 'admin', active: boolean}>) => {
     setLoadingStates(prev => ({...prev, [user.id]: true}));
-    const updatedUser = { ...user, ...updates };
-    const result = await updateUserOnServer(updatedUser);
+    
+    const result = await updateUserOnServer(user.id, updates);
     
     if (result.success && result.user) {
         setUsers(prevUsers => prevUsers.map(u => u.id === result.user!.id ? result.user! : u));
@@ -132,7 +132,7 @@ export function UserTable({ initialUsers }: { initialUsers: User[] }) {
                         {user.active ? 'Active' : 'Inactive'}
                     </Badge>
                 </TableCell>
-                <TableCell>{format(new Date(user.lastLogin), 'PPp')}</TableCell>
+                <TableCell>{user.lastLogin ? format(new Date(user.lastLogin), 'PPp') : 'Never'}</TableCell>
                 <TableCell>
                   {loadingStates[user.id] ? (
                     <Loader2 className="h-4 w-4 animate-spin"/>

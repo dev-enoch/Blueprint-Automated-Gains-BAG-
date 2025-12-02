@@ -11,20 +11,13 @@ import {
 } from '../ui/dropdown-menu';
 import { User, Shield, LogOut } from 'lucide-react';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 export async function AppLayout({ children }: { children: React.ReactNode }) {
   const user = await getAuth();
 
-  // The middleware now handles redirection, so we can assume user exists here.
-  // A check is still good for type safety and as a fallback.
   if (!user) {
-    // This state should ideally not be reached if the middleware is working.
-    // You could render a loading spinner or a fallback UI here.
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <p>Loading...</p>
-      </div>
-    );
+    redirect('/login');
   }
 
   return (

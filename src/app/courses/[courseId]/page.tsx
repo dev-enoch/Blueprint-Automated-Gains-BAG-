@@ -1,6 +1,6 @@
 import { getAuth } from '@/lib/auth';
 import { getCourseById, getUserProgress } from '@/lib/data';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { AppLayout } from '@/components/app/AppLayout';
 import { Button } from '@/components/ui/button';
 import {
@@ -22,8 +22,7 @@ type CourseLandingPageProps = {
 export default async function CourseLandingPage({ params }: CourseLandingPageProps) {
   const user = await getAuth();
   if (!user) {
-    // This should not be reached if middleware is configured correctly.
-    return null;
+    redirect('/login');
   }
 
   const course = await getCourseById(params.courseId);
@@ -32,9 +31,27 @@ export default async function CourseLandingPage({ params }: CourseLandingPagePro
   }
   
   const progress = await getUserProgress(user.id);
-  const firstTopicId = course.modules[0]?.topics[0]?.id;
+  
+  // Find first uncompleted topic, or default to the very first topic
+  let firstUncompletedTopicId = course.modules?.[0]?.topics?.[0]?.id;
+  let allTopicsCompleted = true;
 
-  if (!firstTopicId) {
+  if (course.modules) {
+    for (const mod of course.modules) {
+        for (const top of mod.topics) {
+            if (!progress[top.id]) {
+                firstUncompletedTopicId = top.id;
+                allTopicsCompleted = false;
+                break;
+            }
+        }
+        if (!allTopicsCompleted) break;
+    }
+  }
+
+  const startTopicId = firstUncompletedTopicId;
+
+  if (!startTopicId) {
     // Handle case where course has no topics
     return (
         <AppLayout>
@@ -56,8 +73,8 @@ export default async function CourseLandingPage({ params }: CourseLandingPagePro
             <p className="mt-4 text-lg text-muted-foreground">{course.description}</p>
             
             <Button asChild size="lg" className="mt-8">
-              <Link href={`/courses/${course.id}/${firstTopicId}`}>
-                Start Course
+              <Link href={`/courses/${course.id}/${startTopicId}`}>
+                {allTopicsCompleted ? 'Review Course' : 'Start Course'}
               </Link>
             </Button>
           </div>
