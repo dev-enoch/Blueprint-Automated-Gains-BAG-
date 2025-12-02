@@ -14,7 +14,6 @@ type CoursePlayerPageProps = {
 export default async function CoursePlayerPage({ params }: CoursePlayerPageProps) {
   const user = await getAuth();
   if (!user) {
-    // This case should be handled by middleware, but as a fallback:
     redirect('/login');
   }
 

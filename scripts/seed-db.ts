@@ -24,41 +24,90 @@ try {
 const db = getFirestore();
 
 const coursesData = [
+    // English Courses
     {
-      id: 'course-1',
-      title: 'Affiliate Marketing 101: The Blueprint',
-      description: 'Your first step into the world of affiliate marketing.',
+      id: 'en-affiliate-marketing',
+      title: 'Affiliate Marketing',
+      description: 'Learn the fundamentals of affiliate marketing and how to succeed.',
       modules: [
         {
-          id: 'c1-m1',
-          title: 'Module 1: The Basics',
+          id: 'en-am-m1',
+          title: 'Module 1: Introduction',
           topics: [
-            { id: 'c1-m1-t1', title: 'Introduction to Affiliate Marketing', description: 'Learn the fundamentals of what affiliate marketing is and how it works. We cover the key players and the flow of value.', videoId: 'u-g_N4s4p2s' },
-            { id: 'c1-m1-t2', title: 'Finding Your Niche', description: 'Discover how to identify and validate a profitable niche that aligns with your passions and has market demand.', videoId: 'bT_32G-8a3g' },
-            { id: 'c1-m1-t3', title: 'Choosing the Right Affiliate Programs', description: 'Not all affiliate programs are created equal. Learn what to look for, from commission structures to merchant support.', videoId: 'P_4nK7aJ21E' },
-          ],
-        },
-        {
-          id: 'c1-m2',
-          title: 'Module 2: Building Your Platform',
-          topics: [
-            { id: 'c1-m2-t1', title: 'Setting Up Your Website', description: 'A step-by-step guide to getting your affiliate website online using modern, easy-to-use tools.', videoId: 'ERp02p3tX6I' },
-            { id: 'c1-m2-t2', title: 'Creating High-Converting Content', description: 'Learn the art and science behind content that not only ranks but also persuades your audience to take action.', videoId: '5nER-z22a2I' },
+            { id: 'en-am-m1-t1', title: 'What is Affiliate Marketing?', description: 'An overview of the affiliate marketing ecosystem.', videoId: 'u-g_N4s4p2s' },
+            { id: 'en-am-m1-t2', title: 'Choosing Your Niche', description: 'How to find a profitable niche that you are passionate about.', videoId: 'bT_32G-8a3g' },
           ],
         },
       ],
     },
     {
-      id: 'course-2',
-      title: 'Advanced SEO for Affiliates',
-      description: 'Master SEO to drive organic traffic and boost your earnings.',
+      id: 'en-graphics-design',
+      title: 'Graphics Design',
+      description: 'Master the art of graphics design with modern tools and techniques.',
       modules: [
         {
-          id: 'c2-m1',
-          title: 'Module 1: SEO Fundamentals',
+          id: 'en-gd-m1',
+          title: 'Module 1: The Basics',
           topics: [
-            { id: 'c2-m1-t1', title: 'Understanding SEO', description: 'A deep dive into the three pillars of SEO: On-Page, Off-Page, and Technical SEO.', videoId: 'PYE_y9pB6lE' },
-            { id: 'c2-m1-t2', title: 'Keyword Research Mastery', description: 'Move beyond basic keyword research to uncover high-intent, low-competition keywords that drive sales.', videoId: 'GWoVz_nE2ZE' },
+            { id: 'en-gd-m1-t1', title: 'Introduction to Design Principles', description: 'Learn about the core principles of great design.', videoId: 'YqQx75OPRa0' },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'en-fb-tiktok-ads',
+      title: 'Facebook & Tiktok Advertising',
+      description: 'Drive growth with powerful advertising strategies on social media.',
+      modules: [
+        {
+          id: 'en-fta-m1',
+          title: 'Module 1: Getting Started',
+          topics: [
+            { id: 'en-fta-m1-t1', title: 'Setting up Your Ad Accounts', description: 'A step-by-step guide to creating your advertising accounts.', videoId: 's-g2I_b2aFU' },
+          ],
+        },
+      ],
+    },
+    // Hausa Courses
+    {
+      id: 'ha-affiliate-marketing',
+      title: 'Affiliate Marketing (Hausa)',
+      description: 'Koyi tushen tallan haɗin gwiwa da yadda ake samun nasara.',
+      modules: [
+        {
+          id: 'ha-am-m1',
+          title: 'Babi na 1: Gabatarwa',
+          topics: [
+            { id: 'ha-am-m1-t1', title: 'Menene Affiliate Marketing?', description: 'Cikakken bayani akan tsarin affiliate marketing.', videoId: 'x4q-o1f12I' },
+            { id: 'ha-am-m1-t2', title: 'Zaben Fannin Ka', description: 'Yadda zaka nemo fannin da zai kawo riba wanda kake sha\'awa.', videoId: 'v8sXkGq33c' },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'ha-graphics-design',
+      title: 'Graphics Design (Hausa)',
+      description: 'Kware a fasahar zane-zane na zamani da dabaru.',
+       modules: [
+        {
+          id: 'ha-gd-m1',
+          title: 'Babi na 1: Tushe',
+          topics: [
+            { id: 'ha-gd-m1-t1', title: 'Gabatarwa ga Ka\'idojin Zane', description: 'Koyi game da muhimman ka\'idojin zane mai kyau.', videoId: 'a_hOpYiiX' },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'ha-fb-tiktok-ads',
+      title: 'Facebook & Tiktok Advertising (Hausa)',
+      description: 'Samu ci gaba da manyan dabarun talla a shafukan sada zumunta.',
+       modules: [
+        {
+          id: 'ha-fta-m1',
+          title: 'Babi na 1: Farawa',
+          topics: [
+            { id: 'ha-fta-m1-t1', title: 'Kafa Asusun Tallan Ka', description: 'Jagora mataki-mataki don ƙirƙirar asusun tallan ka.', videoId: '5Z1b_V_mX' },
           ],
         },
       ],

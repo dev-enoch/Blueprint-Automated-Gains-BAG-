@@ -31,7 +31,7 @@ const nextConfig: NextConfig = {
     ],
   },
   experimental: {
-    serverComponentsExternalPackages: ['@genkit-ai/google-genai', 'firebase-admin'],
+    serverComponentsExternalPackages: ['@genkit-ai/google-genai', 'firebase-admin', '@genkit-ai/next'],
   },
 };
 

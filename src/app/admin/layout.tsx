@@ -36,7 +36,11 @@ import { NavLink } from './_components/NavLink';
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const user = await getAuth();
 
-  if (!user || user.role !== 'admin') {
+  if (!user) {
+    redirect('/login');
+  }
+
+  if (user.role !== 'admin') {
     redirect('/');
   }
 
