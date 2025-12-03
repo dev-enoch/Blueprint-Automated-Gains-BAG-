@@ -1,52 +1,37 @@
 import 'server-only';
-import { collection, getDocs, doc, getDoc, setDoc, updateDoc, writeBatch } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { db as adminDb, adminAuth as adminAuthInstance } from '@/firebase/admin';
 import type { Course, Module, Topic, User, UserProfile, UserProgress } from './types';
+import fs from 'fs/promises';
+import path from 'path';
 
 // Ensure db is not null before using
 const db = adminDb!;
 const adminAuth = adminAuthInstance!;
 
+// Path to the JSON file
+const coursesFilePath = path.join(process.cwd(), 'src', 'lib', 'courses.json');
+
+// Helper function to read courses from JSON
+async function readCoursesFile(): Promise<Course[]> {
+  try {
+    const fileContent = await fs.readFile(coursesFilePath, 'utf-8');
+    return JSON.parse(fileContent);
+  } catch (error) {
+    console.error('Error reading courses.json:', error);
+    return [];
+  }
+}
 
 export async function getCourses(): Promise<Course[]> {
-  const coursesSnapshot = await getDocs(collection(db, 'courses'));
-  const courses: Course[] = [];
-  for (const courseDoc of coursesSnapshot.docs) {
-    const courseData = courseDoc.data();
-    const modulesSnapshot = await getDocs(collection(db, `courses/${courseDoc.id}/modules`));
-    const modules: Module[] = [];
-    for (const moduleDoc of modulesSnapshot.docs) {
-      const moduleData = moduleDoc.data();
-      const topicsSnapshot = await getDocs(collection(db, `courses/${courseDoc.id}/modules/${moduleDoc.id}/topics`));
-      const topics: Topic[] = topicsSnapshot.docs.map(topicDoc => ({
-        id: topicDoc.id,
-        ...topicDoc.data()
-      } as Topic));
-      modules.push({ id: moduleDoc.id, ...moduleData, topics } as Module);
-    }
-    courses.push({ id: courseDoc.id, ...courseData, modules } as Course);
-  }
-  return courses;
+  const courses = await readCoursesFile();
+  // We need to return courses without modules and topics for the main listing
+  return courses.map(({ id, title, description }) => ({ id, title, description, modules: [] }));
 }
 
 export async function getCourseById(id: string): Promise<Course | undefined> {
-  const courseDoc = await getDoc(doc(db, 'courses', id));
-  if (!courseDoc.exists()) {
-    return undefined;
-  }
-  const courseData = courseDoc.data();
-  const modulesSnapshot = await getDocs(collection(db, `courses/${id}/modules`));
-  const modules: Module[] = [];
-  for (const moduleDoc of modulesSnapshot.docs) {
-    const moduleData = moduleDoc.data();
-    const topicsSnapshot = await getDocs(collection(db, `courses/${id}/modules/${moduleDoc.id}/topics`));
-    const topics: Topic[] = topicsSnapshot.docs.map(topicDoc => ({
-      id: topicDoc.id,
-      ...topicDoc.data()
-    } as Topic));
-    modules.push({ id: moduleDoc.id, ...moduleData, topics } as Module);
-  }
-  return { id: courseDoc.id, ...courseData, modules } as Course;
+  const courses = await readCoursesFile();
+  return courses.find(course => course.id === id);
 }
 
 export async function getUsers(): Promise<User[]> {
@@ -73,7 +58,6 @@ export async function updateUser(userId: string, updates: Partial<{ role: 'user'
     if (!adminAuth) {
         throw new Error('Firebase Admin Auth not initialized. Cannot update user.');
     }
-    const userRecord = await adminAuth.getUser(userId);
     
     if (updates.role) {
         await adminAuth.setCustomUserClaims(userId, { role: updates.role });

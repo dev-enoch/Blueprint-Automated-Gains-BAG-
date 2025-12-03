@@ -24,37 +24,6 @@
       },
       "required": ["email", "role", "createdAt"]
     },
-    "course": {
-      "title": "Course",
-      "description": "Represents a course, available in English or Hausa.",
-      "type": "object",
-      "properties": {
-        "title": { "type": "string" },
-        "description": { "type": "string" },
-        "language": { "type": "string", "enum": ["en", "ha"]}
-      },
-      "required": ["title", "description", "language"]
-    },
-    "module": {
-      "title": "Module",
-      "description": "A module within a course.",
-      "type": "object",
-      "properties": {
-        "title": { "type": "string" }
-      },
-      "required": ["title"]
-    },
-    "topic": {
-      "title": "Topic",
-      "description": "A topic within a module, containing a video lesson.",
-      "type": "object",
-      "properties": {
-        "title": { "type": "string" },
-        "description": { "type": "string" },
-        "videoId": { "type": "string", "description": "The YouTube video ID." }
-      },
-      "required": ["title", "description", "videoId"]
-    },
     "userProgress": {
         "title": "User Progress",
         "description": "Tracks a user's completion of a topic.",
@@ -76,18 +45,6 @@
     "/users/{userId}/progress/{topicId}": {
         "schema": { "$ref": "#/entities/userProgress" },
         "description": "Tracks completion status for each topic for a user."
-    },
-    "/courses/{courseId}": {
-      "schema": { "$ref": "#/entities/course" },
-      "description": "Top-level collection for all courses."
-    },
-    "/courses/{courseId}/modules/{moduleId}": {
-      "schema": { "$ref": "#/entities/module" },
-      "description": "Sub-collection for modules within a course."
-    },
-    "/courses/{courseId}/modules/{moduleId}/topics/{topicId}": {
-      "schema": { "$ref": "#/entities/topic" },
-      "description": "Sub-collection for topics within a module."
     }
   }
 }
